@@ -1,5 +1,5 @@
+import mongoose from 'mongoose';
 
-const mongoose = require('mongoose')
 let conn = null
 const uri = process.env.DB_URI;
 exports.connectDatabase = async () => {

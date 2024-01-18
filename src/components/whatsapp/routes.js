@@ -1,8 +1,9 @@
-'use sctrict'
-const express = require("express");
-const router = express.Router();
-const controller = require("./controller");
+import express from "express";
+import { receiveMessages, testWebhook } from "./controller.js";
 
-router.get('/webhook', controller.testWebhook)
-router.post('/webhook', controller.receiveMessages)
-module.exports = router;
+const router = express.Router();
+router.get('/webhook', testWebhook)
+router.post('/webhook', receiveMessages)
+
+
+export default router

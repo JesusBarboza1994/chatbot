@@ -1,10 +1,9 @@
-'use sctrict'
-const express = require('express')
-const cors = require('cors')
-const app = express()
-const helmet = require('helmet')
-const router = require('./routes')
+import express from 'express'
+import cors from 'cors'
+import helmet from 'helmet'
+import router from './routes/index.js'
 
+const app = express()
 // require('./database/config.js');
 
 app.use(express.urlencoded({ extended: false }));
@@ -17,4 +16,4 @@ app.get('/', function (req, res) {
     res.send("");
 });
 
-module.exports = app
+export default app

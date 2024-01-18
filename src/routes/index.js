@@ -1,9 +1,7 @@
-'use sctrict'
+import express from 'express';
+import whatsapp from '../components/whatsapp/routes.js';
 
-const express = require('express')  
 const router = express.Router()
 
-const whatsapp = require('../components/whatsapp/routes.js')
-
 router.use("/whatsapp", whatsapp);
-module.exports = router
+export default router

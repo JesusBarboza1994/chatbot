@@ -27,4 +27,5 @@ axios.post('https://api.openai.com/v1/chat/completions', data, { headers })
   })
   .catch(error => {
     console.error('Error al hacer la solicitud:', error);
+    console.log()
   });

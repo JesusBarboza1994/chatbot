@@ -1,10 +1,7 @@
-'use sctrict'
+import app from './src/app.js'
+import dotenv from 'dotenv'
 
-if (process.env.NODE_ENV !== "production") {
-        require("dotenv").config();
-}
 
-const app = require('./src/app')
 const puerto = process.env.PORT
 
 app.listen(puerto, () => {
