@@ -1,7 +1,16 @@
 import axios from "axios";
+import { Chat } from "../model.js";
 
 const OPENAI_API_KEY = process.env.SECRET_KEY;
-export async function askOpenAI(text){
+export async function askOpenAI(text, customer){
+  const raw_messages = await Chat.find({ customer: customer._id }).sort({ created_at: 1 })
+  const messages = raw_messages.map((message) => {
+    return {
+      role: message.role,
+      content: message.message
+    }
+  })
+  console.log("MESSAGESSSSSSS",messages)
   const data = {
     model: 'gpt-3.5-turbo',
     messages: [
@@ -15,12 +24,9 @@ export async function askOpenAI(text){
       },
       {
         role: 'user',
-        content: 'Mi nombre es Juan.'
-      },
-      {
-        role: 'user',
         content: text
-      }
+      },
+      ...messages
     ]
   };
 
@@ -32,5 +38,10 @@ export async function askOpenAI(text){
   const response = await axios.post('https://api.openai.com/v1/chat/completions', data, { headers })
   console.log('Respuesta de OpenAI:', response.data.choices[0].message);
   const response_chat = response.data.choices[0].message.content
+  await Chat.create({
+    customer: customer._id,
+    role: 'system',
+    message: response_chat,
+  })
   return response_chat
 }

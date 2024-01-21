@@ -2,10 +2,10 @@ import express from 'express'
 import cors from 'cors'
 import helmet from 'helmet'
 import router from './routes/index.js'
+import { connectDatabase } from './database/config.js'
 
 const app = express()
-// require('./database/config.js');
-
+await connectDatabase()
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json({ limit: '10mb' }));
 app.use(cors());
