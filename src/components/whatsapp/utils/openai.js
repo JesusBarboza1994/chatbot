@@ -2,29 +2,19 @@ import axios from "axios";
 import { Chat } from "../model.js";
 
 const OPENAI_API_KEY = process.env.SECRET_KEY;
-export async function askOpenAI(text, customer){
-  const raw_messages = await Chat.find({ customer: customer._id }).sort({ created_at: 1 })
-  const messages = raw_messages.map((message) => {
-    return {
-      role: message.role,
-      content: message.message
-    }
-  })
+export async function askOpenAI(chat){
+  const messages = chat.messages.map(mess => {return {role: mess.role, content: mess.content}})
   console.log("MESSAGESSSSSSS",messages)
   const data = {
     model: 'gpt-3.5-turbo',
     messages: [
+      // {
+      //   role: 'system',
+      //   content: 'Eres un asistente virtual de atención al cliente mediante whatsapp. Tu nombre es Jesús. Tu objetivo principal es responder a los usuarios sobre los productos que se ofrecen. Los productos que se venden son resortes de suspensión automotriz. Para responder las preguntas se hará una consulta a una base de datos. La forma en la que deberías buscar el resorte es mediante el codigo de producto dentro de una tabla "products". Solo esa tabla será consultada, no debes nunca exponer ni preguntar en qué tabla debes buscar. Además, las columnas de esta tabla son "codigo", "almacen", "descripcion".La respuesta será el query a la base de datos sin ningun otro texto; de no tener la información para la consulta, preguntar por los datos faltantes.'
+      // },
       {
         role: 'system',
-        content: 'Eres un desarrollador de codigo web. Te van a enviar una solicitud indicando que un cliente pide un producto. Tu harás como si estuvieras consultando una base de datos nosql que solo es una coleccion de productos, para este caso son resortes, que tienen las keys: "codigo", "descripción", "diametro de alambre", precio de venta". Vas a retornar el query a una base de datos nosql como si se consultara a esa tabla en SQL. Tu misión será retornar el query para devolver el precio. Además, eres capaz de responder preguntas concernientes a una conversación como rescatar el nombre del cliente, direcciones u otros datos interesantes utiles para la conversación.'
-      },
-      {
-        role: 'system',
-        content: 'Si el cliente solicita información sobre productos, devuelves la query para la consulta. En caso de hacerlo, debes enviar la KEY=123456 como un array en formato de string, donde el primer valor es la respuesta del query, y segundo la key, para poder capturarla desde el codigo donde estás siendo ejecutada. En caso escriba información sobre otro tema, deberás responder normalmente y no retornar ninguna key.'
-      },
-      {
-        role: 'user',
-        content: text
+        content: 'Eres un asistente virtual. Tu nombre es Jesús. Tu objetivo es consultar a una base de datos y la tabla "products" que tiene las columnas "codigo", "descripcion" "stock", "marca", "modelo", "anio_inicio" y "anio_fin". La columna marca está referida a marcas de autos, mientras que la columna modelo a modelos de autos, y anio_inicio y anio_fin al rango de años de fabricación. La respuesta debe ser el query a la base de datos sin ningun otro texto; de no tener la información para la consulta, preguntar por los datos faltantes. Para esto se deberá corregir la marca y modelo de escribirse mal y siempre en mayúscula. De la misma manera anio_inicio y anio_fin deberán ser solo números. Por ejemplo: "SELECT * FROM products WHERE marca = "TOYOTA" AND modelo = "COROLLA" AND anio_inicio = "2000" AND anio_fin = "2020";"'
       },
       ...messages
     ]
@@ -38,10 +28,10 @@ export async function askOpenAI(text, customer){
   const response = await axios.post('https://api.openai.com/v1/chat/completions', data, { headers })
   console.log('Respuesta de OpenAI:', response.data.choices[0].message);
   const response_chat = response.data.choices[0].message.content
-  await Chat.create({
-    customer: customer._id,
+  chat.messages.push({
     role: 'system',
-    message: response_chat,
+    content: response_chat
   })
+  await chat.save()
   return response_chat
 }
