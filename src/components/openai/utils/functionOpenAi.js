@@ -94,7 +94,7 @@ export async function askOpenAI(chat={messages:[]}, data_api=null){
       content: `Usa esta información para responder al cliente: ${response_query}`
     })
     chat.save()
-    return askOpenAI(chat)
+    return await askOpenAI(chat)
   }else{
     console.log('Respuesta de OpenAI:', response.data.choices[0].message);
     const response_chat = response.data.choices[0].message.content
