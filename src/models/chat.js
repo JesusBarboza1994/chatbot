@@ -4,7 +4,7 @@ const message_schema = new mongoose.Schema({
   created_at: { type: Date, default: Date.now },
   role:{
     type: String,
-    enum: ["user", "system"],
+    enum: ["user", "system", "assistant"],
     default: 'user'
   },
   content: { type: String, required: true }

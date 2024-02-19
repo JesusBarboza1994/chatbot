@@ -69,7 +69,7 @@ export async function openAIBeta(req, res){
 import path from 'path'
 import fs from 'fs'
 import { askOpenAI } from "./utils/functionOpenAi.js";
-import { Chat } from "../whatsapp/model.js";
+import { Chat } from "../../models/chat.js";
 
 // Genera un audio a partir de un texto
 export async function textToSpeech(req, res){

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Chat } from './model.js';
+import { Chat } from '../../models/chat.js';
 import { queryDataBase } from './utils/queryDatabase.js';
 import { sendResponseToWhatsapp } from './utils/sendResponseToWhatsapp.js';
 import { response } from 'express';

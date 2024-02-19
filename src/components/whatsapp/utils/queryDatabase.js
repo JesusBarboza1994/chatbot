@@ -14,6 +14,6 @@ export async function queryDataBase(input){
   })
   const data = await api_response.json()
   console.log("RESPONSE DE QUERY", data)
-  if(data && data.codes && data.codes.length === 0) throw new Error("No se encontraron resultados")
+  if(data && ((data.codes && data.codes.length === 0) || data.error)) throw new Error("No se encontraron resultados")
   return JSON.stringify(data.codes)
 }

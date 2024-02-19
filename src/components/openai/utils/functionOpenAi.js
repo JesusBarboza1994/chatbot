@@ -1,7 +1,7 @@
 
 import axios from "axios";
 import { queryDataBase } from "../../whatsapp/utils/queryDatabase.js";
-
+import {Order} from "../../../models/order.js";
 const tools = [
   {
       "type": "function",
@@ -29,40 +29,40 @@ const tools = [
                   },
                   "version":{
                     "type": "string",
-                    "description": "Es la versión del producto requerido. Debe ser consultado y sus valores solo podrán ser:  Original, GLP, GNV3, GNV4, GNV5,  Reforzado, Progresivo. Le puedes dar las opciones si el usuario lo solicita."
+                    "description": "Es la versión del producto requerido. Debe ser consultado y sus valores solo podrán ser:  Original, y Reforzado si la posición es DEL; o Original, GLP, GNV3, GNV4, GNV5 si es POST. Le puedes dar las opciones si el usuario lo solicita."
                   }
 
               },
-              "required": ["brand", "model", "year", "position","version"]
+              "required": ["brand", "model", "year"]
           },
       }
   },
-  // {
-  //   "type": "function",
-  //   "function": {
-  //       "name": "ask_api",
-  //       "description": "Suma dos valores num1 y num2 y devuelve su resultado. Deberás preguntar por todos los valores que necesitas y mostrar como resultado un JSON con el valor de la suma.",
-  //       "parameters": {
-  //           "type": "object",
-  //           "properties": {
-  //               "num1": {
-  //                   "type": "string",
-  //                   "description": "Es el primer valor",
-  //               },
-  //               "num2": {
-  //                 "type": "string",
-  //                 "description": "Este valor es el segundo valor",
-  //               }
-  //           },
-  //           "required": ["num1", "num2"]
-  //       },
-  //   }
-  // }
+  {
+      "type": "function",
+      "function": {
+          "name": "create_order",
+          "description": "Si el cliente acepta el producto se procede con la creación de un pedido para el cliente.",
+          "parameters": {
+              "type": "object",
+              "properties": {
+                  "quantity": {
+                      "type": "string",
+                      "description": "Por defecto es 2. Se debe preguntar al cliente la cantidad de resortes que desea comprar.",
+                  },
+                  "osis_code": {
+                    "type": "string",
+                    "description": "Extraer de la respuesta anterior al cliente el osis_code que se muestra.",
+                  }
+                },
+                "required": ["quantity", "osis_code"]
+            },
+        }
+  }
 ]
 const OPENAI_API_KEY = process.env.SECRET_KEY;
-export async function askOpenAI(chat={messages:[]}, data_api=null){
+export async function askOpenAI(chat={messages:[]}){
   const messages = chat.messages.map(mess => {return {role: mess.role, content: mess.content}})
-  console.log("MESSAGESSSSSSS",messages)
+  // console.log("MESSAGES",messages)
   
   const data = {
     model: 'gpt-3.5-turbo',
@@ -71,10 +71,6 @@ export async function askOpenAI(chat={messages:[]}, data_api=null){
         role: 'system',
         content: 'Eres un asistente virtual de atención al cliente mediante whatsapp. Tu nombre es Jesús. Tu objetivo principal es responder a los usuarios sobre los productos que se ofrecen. Los productos que se venden son resortes de suspensión automotriz.'
       },
-      // {
-      //   role: 'system',
-      //   content: 'Tu nombre es Jesús. Tu objetivo es ayudar a las personas con sus sumas.'
-      // },
       ...messages
     ],
     tools: tools
@@ -86,31 +82,53 @@ export async function askOpenAI(chat={messages:[]}, data_api=null){
   };
 
   const response = await axios.post('https://api.openai.com/v1/chat/completions', data, { headers })
+  let response_chat
   if(response.data.choices[0].message.tool_calls){
     console.log('Respuesta de FUNCION:', response.data.choices[0].message.tool_calls);
-    try {
-      const response_query = await queryDataBase(response.data.choices[0].message.tool_calls[0].function.arguments)
-      chat.messages.push({
-        role: 'system',
-        content: `Usa esta información para responder al cliente: ${response_query}`
-      })
-      return await askOpenAI(chat)
-      
-    } catch (error) {
-      chat.messages.push({
-        role: 'system',
-        content: `Confirma que no se encontraron resortes solicitados.`
-      })
+    if(response.data.choices[0].message.tool_calls[0].function.name === 'create_order'){
+        const order_data = JSON.parse(response.data.choices[0].message.tool_calls[0].function.arguments)
+        await Order.create({
+          osis_code: order_data.osis_code,
+          quantity: order_data.quantity,
+          phone_number: chat.phone_number
+        })
+        const create_order_message = `Su pedido ha sido creado exitosamente. Muchas gracias.`
+        chat.messages.push({
+          role: 'assistant',
+          content: create_order_message
+        })
+        chat.save()
+        return create_order_message
     }
-    chat.save()
-    
+    if(response.data.choices[0].message.tool_calls[0].function.name === 'ask_api'){
+      try {
+        const response_query = await queryDataBase(response.data.choices[0].message.tool_calls[0].function.arguments)
+        chat.messages.push({
+          role: 'system',
+          content: `Desglosa la información puesta dentro de este array para responder: ${response_query}`
+        })
+        console.log("DATA",  `Desglosa la información puesta dentro de este array para responder: ${response_query}`)
+        chat.save()
+        return await askOpenAI(chat)  
+       
+      } catch (error) {
+        console.log("ERROR", error)
+        const no_stock_response = `Por el momento no contamos con estos resortes en nuestro stock.`
+        chat.messages.push({
+          role: 'assistant',
+          content: no_stock_response
+        })
+        chat.save()
+        return no_stock_response
+      }
+    }
     
   }else{
     console.log('Respuesta de OpenAI:', response.data.choices[0].message);
-    const response_chat = response.data.choices[0].message.content
+    response_chat = response.data.choices[0].message.content
     console.log("RES", response_chat)
     chat.messages.push({
-      role: 'system',
+      role: 'assistant',
       content: response_chat
     })
     chat.save()
