@@ -59,12 +59,13 @@ export async function receiveMessages(req, res) {
     }
     
     let response_chat = await askOpenAI(chat)
-    return res.status(200).json(
-      {
-        success: true,
-        response_chat
-      }
-    )
+    
+    try {
+      await sendResponseToWhatsapp(body, response_chat)
+      res.sendStatus(200);
+    } catch (error) {
+      res.sendStatus(404);
+    }
     
   }
 }
