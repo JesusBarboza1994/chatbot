@@ -13,7 +13,7 @@ export async function sendResponseToWhatsapp(body, response_chat, from_number=nu
       ) {
         let phone_number_id = body.entry[0].changes[0].value.metadata.phone_number_id;
         let from = body.entry[0].changes[0].value.messages[0].from; // extract the phone number from the webhook payload
-        let msg_body = body.entry[0].changes[0].value.messages[0].text.body; // extract the message text from the webhook payload
+        // let msg_body = body.entry[0].changes[0].value.messages[0].text.body; // extract the message text from the webhook payload
         await axios({
           method: "POST", // Required, HTTP method, a string, e.g. POST, GET
           url:
