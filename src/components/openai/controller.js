@@ -68,6 +68,8 @@ export async function openAIBeta(req, res){
 
 import path from 'path'
 import fs from 'fs'
+import { askOpenAI } from "./utils/functionOpenAi.js";
+import { Chat } from "../whatsapp/model.js";
 
 // Genera un audio a partir de un texto
 export async function textToSpeech(req, res){
@@ -80,4 +82,32 @@ export async function textToSpeech(req, res){
   console.log(speechFile);
   const buffer = Buffer.from(await mp3.arrayBuffer());
   await fs.promises.writeFile(speechFile, buffer);
+}
+
+export async function useFunctionOpenAi(req, res){
+  const {phone_number, text} = req.body
+  let chat = await Chat.findOne({ phone_number })
+  if(!chat){
+    chat = await Chat.create({
+      phone_number,
+      messages: [{
+        created_at: new Date(),
+        role: 'user',
+        content: text
+      }]
+    })
+  }else{
+    chat.messages.push({
+      role: 'user',
+      content: text
+    })
+    await chat.save()
+  }
+  const data = askOpenAI(chat)
+  return res.status(200).json(
+    {
+      success: true,
+      data
+    }
+  )
 }

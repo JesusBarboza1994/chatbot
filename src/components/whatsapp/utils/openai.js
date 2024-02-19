@@ -2,11 +2,17 @@ import axios from "axios";
 import { Chat } from "../model.js";
 
 const OPENAI_API_KEY = process.env.SECRET_KEY;
-export async function askOpenAI(chat){
+export async function askOpenAI(chat, data_api=null){
   const messages = chat.messages.map(mess => {return {role: mess.role, content: mess.content}})
   console.log("MESSAGESSSSSSS",messages)
+  if(data_api){
+    messages.push({
+      role: 'system',
+      content: `Recibirás esta información y se entregaras al cliente pero con una mejor estructura: ${JSON.stringify(data_api)}`
+    })
+  }
   const data = {
-    model: 'gpt-3.5-turbo',
+    model: 'gpt-4-1106-preview',
     messages: [
       // {
       //   role: 'system',
@@ -14,7 +20,7 @@ export async function askOpenAI(chat){
       // },
       {
         role: 'system',
-        content: 'Eres un asistente virtual. Tu nombre es Jesús. Tu objetivo es consultar a una base de datos y la tabla "products" que tiene las columnas "codigo", "descripcion" "stock", "marca", "modelo", "anio_inicio" y "anio_fin". La columna marca está referida a marcas de autos, mientras que la columna modelo a modelos de autos, y anio_inicio y anio_fin al rango de años de fabricación. La respuesta debe ser el query a la base de datos sin ningun otro texto; de no tener la información para la consulta, preguntar por los datos faltantes. Para esto se deberá corregir la marca y modelo de escribirse mal y siempre en mayúscula. De la misma manera anio_inicio y anio_fin deberán ser solo números. Por ejemplo: "SELECT * FROM products WHERE marca = "TOYOTA" AND modelo = "COROLLA" AND anio_inicio = "2000" AND anio_fin = "2020";"'
+        content: 'Tu nombre es Jesús. Tu objetivo es generar y responder con un JSON stringify de un objeto a modo de texto que puede tener las keys: "brand", "model", "year", "position" y "version". Cada uno de estos valores debe ser consultado aunque no necesariamente se deberá incluir si es que no se consigue la información. La key "brand" se refiere a la marca de un carro, al igual que la key "model" es el modelo correspondiente a la marca. Deberás corregir la marca y modelo si se escribe mal además de ponerlos en el JSON en mayusculas. Si no consigues información sobre las demás keys, entonces no las ingreses al JSON, pero como mínimo deberá haber una key.'
       },
       ...messages
     ]

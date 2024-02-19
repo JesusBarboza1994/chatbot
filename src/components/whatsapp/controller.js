@@ -3,6 +3,7 @@ import { askOpenAI } from './utils/openai.js';
 import { Chat } from './model.js';
 import { queryDataBase } from './utils/queryDatabase.js';
 import { sendResponseToWhatsapp } from './utils/sendResponseToWhatsapp.js';
+import { response } from 'express';
 
 export function testWebhook(req, res) {
    const verify_token = process.env.VERIFY_TOKEN;
@@ -30,7 +31,7 @@ export async function receiveMessages(req, res) {
   let body = req.body;
 
   // Check the Incoming webhook message
-  console.log("AQUI",JSON.stringify(req.body, null, 2));
+  // console.log("AQUI",JSON.stringify(req.body, null, 2));
 
   // Valida si está llegando un nuevo mensaje y no los estados de los mensajes anteriores.
   if(req.body.entry[0].changes[0].value.messages){
@@ -57,8 +58,13 @@ export async function receiveMessages(req, res) {
       await chat.save()
     }
     
-    const response_chat = await askOpenAI(chat)
-    if(response_chat.includes("SELECT")) queryDataBase(response_chat)
+    let response_chat = await askOpenAI(chat)
+    if(response_chat.includes("{") && response_chat.includes("}")){
+      const data_api =await queryDataBase(response_chat)
+      
+      response_chat = data_api.reduce((acc, data) => acc + `- ${data.brand} ${data.model} ${data.start_year}-${data.end_year} ${data.version} ${data.position} --> S/${data.price} | ${data.stock} unds disponibles.\n` 
+      , "Estos fueron los productos que pude encontrar con esas características: \n") 
+    } 
     
     try {
       sendResponseToWhatsapp(body, response_chat)
@@ -69,4 +75,5 @@ export async function receiveMessages(req, res) {
     
   }
 }
+
 
