@@ -1,3 +1,7 @@
+
+import axios from "axios";
+import { queryDataBase } from "../../whatsapp/utils/queryDatabase.js";
+
 const tools = [
   {
       "type": "function",
@@ -23,9 +27,13 @@ const tools = [
                     "type": "string",
                     "description": "Es la posición del resorte requerido para el vehículo. Solo puede tener dos valores: 'POST' que se escribe si es posterior o 'DEL' que se escribe si es delantero. Debe ser consultado."
                   },
+                  "version":{
+                    "type": "string",
+                    "description": "Es la versión del producto requerido. Debe ser consultado y sus valores solo podrán ser:  Original, GLP, GNV3, GNV4, GNV5,  Reforzado, Progresivo. Le puedes dar las opciones si el usuario lo solicita."
+                  }
 
               },
-              "required": ["brand", "model", "year", "position"]
+              "required": ["brand", "model", "year", "position","version"]
           },
       }
   },
@@ -51,9 +59,6 @@ const tools = [
   //   }
   // }
 ]
-
-import axios from "axios";
-
 const OPENAI_API_KEY = process.env.SECRET_KEY;
 export async function askOpenAI(chat={messages:[]}, data_api=null){
   const messages = chat.messages.map(mess => {return {role: mess.role, content: mess.content}})
@@ -81,17 +86,24 @@ export async function askOpenAI(chat={messages:[]}, data_api=null){
   };
 
   const response = await axios.post('https://api.openai.com/v1/chat/completions', data, { headers })
-  if(response.data.choices[0].message.content){
-    console.log('Respuesta de OpenAI:', response.data.choices[0].message);
+  if(response.data.choices[0].message.tool_calls){
+    console.log('Respuesta de FUNCION:', response.data.choices[0].message.tool_calls);
+    const response_query = await queryDataBase(response.data.choices[0].message.tool_calls[0].function.arguments)
+    chat.messages.push({
+      role: 'system',
+      content: `Usa esta información para responder al cliente: ${response_query}`
+    })
+    chat.save()
+    return askOpenAI(chat)
   }else{
-    console.log('Respuesta de OpenAI:', response.data.choices[0].message.tool_calls);
+    console.log('Respuesta de OpenAI:', response.data.choices[0].message);
+    const response_chat = response.data.choices[0].message.content
+    console.log("RES", response_chat)
+    chat.messages.push({
+      role: 'system',
+      content: response_chat
+    })
+    chat.save()
+    return response_chat
   }
-  const response_chat = response.data.choices[0].message.content
-  console.log("RES", response_chat)
-  chat.messages.push({
-    role: 'system',
-    content: response_chat
-  })
-  chat.save()
-  return response_chat
 }

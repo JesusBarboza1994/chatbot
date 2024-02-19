@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { askOpenAI } from './utils/openai.js';
 import { Chat } from './model.js';
 import { queryDataBase } from './utils/queryDatabase.js';
 import { sendResponseToWhatsapp } from './utils/sendResponseToWhatsapp.js';
 import { response } from 'express';
+import { askOpenAI } from '../openai/utils/functionOpenAi.js';
 
 export function testWebhook(req, res) {
    const verify_token = process.env.VERIFY_TOKEN;
@@ -59,19 +59,12 @@ export async function receiveMessages(req, res) {
     }
     
     let response_chat = await askOpenAI(chat)
-    if(response_chat.includes("{") && response_chat.includes("}")){
-      const data_api =await queryDataBase(response_chat)
-      
-      response_chat = data_api.reduce((acc, data) => acc + `- ${data.brand} ${data.model} ${data.start_year}-${data.end_year} ${data.version} ${data.position} --> S/${data.price} | ${data.stock} unds disponibles.\n` 
-      , "Estos fueron los productos que pude encontrar con esas características: \n") 
-    } 
-    
-    try {
-      sendResponseToWhatsapp(body, response_chat)
-      res.sendStatus(200);
-    } catch (error) {
-      res.sendStatus(404);
-    }
+    return res.status(200).json(
+      {
+        success: true,
+        response_chat
+      }
+    )
     
   }
 }

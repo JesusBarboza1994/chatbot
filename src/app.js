@@ -11,7 +11,7 @@ app.use(express.json({ limit: '10mb' }));
 app.use(cors());
 app.use(helmet());
 
-app.use("/", router);
+app.use("/v1", router);
 app.get('/', function (req, res) {
     res.send("");
 });
