@@ -35,14 +35,14 @@ export async function receiveMessages(req, res) {
 
   // Valida si está llegando un nuevo mensaje y no los estados de los mensajes anteriores.
   if(req.body.entry[0].changes[0].value.messages){
-    const text = req.body.entry[0].changes[0].value.messages[0].text.body 
-    console.log("WSP TEXT", text)
-    if(!text){
+    console.log("WSP TEXT", req.body.entry[0].changes[0].value.messages[0].text)
+    if(!req.body.entry[0].changes[0].value.messages[0].text){
       console.log("No hay texto")
       const only_text = 'Por el momento no puedo reconocer audios, videos ni imágenes. Por favor enviáme tus requerimientos por escrito.'
       sendResponseToWhatsapp(body, only_text)
       return res.sendStatus(404);
     }
+    const text = req.body.entry[0].changes[0].value.messages[0].text.body 
     const phone_number = req.body.entry[0].changes[0].value.messages[0].from
     const date = req.body.entry[0].changes[0].value.messages[0].timestamp * 1000
     
