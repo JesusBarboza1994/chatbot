@@ -87,6 +87,7 @@ export async function askOpenAI(chat={messages:[]}, data_api=null){
     console.log('Respuesta de OpenAI:', response.data.choices[0].message.tool_calls);
   }
   const response_chat = response.data.choices[0].message.content
+  console.log("RES", response_chat)
   chat.messages.push({
     role: 'system',
     content: response_chat

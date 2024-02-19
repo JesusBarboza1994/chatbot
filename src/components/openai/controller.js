@@ -103,7 +103,7 @@ export async function useFunctionOpenAi(req, res){
     })
     await chat.save()
   }
-  const data = askOpenAI(chat)
+  const data = await askOpenAI(chat)
   return res.status(200).json(
     {
       success: true,
