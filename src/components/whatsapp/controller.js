@@ -68,6 +68,7 @@ export async function receiveMessages(req, res) {
     
     try {
       if(response_chat === `Su pedido ha sido creado exitosamente. Muchas gracias.`){
+        console.log("Enviando mensaje de pedido a vendedor...")
         await sendResponseToWhatsapp(body, response_chat, "51966344009")
       }
       await sendResponseToWhatsapp(body, response_chat)
