@@ -2,6 +2,7 @@
 import axios from "axios";
 import { queryDataBase } from "../../whatsapp/utils/queryDatabase.js";
 import {Order} from "../../../models/order.js";
+import { sendResponseToWhatsapp } from "../../whatsapp/utils/sendResponseToWhatsapp.js";
 const tools = [
   {
       "type": "function",
@@ -105,9 +106,9 @@ export async function askOpenAI(chat={messages:[]}){
         const response_query = await queryDataBase(response.data.choices[0].message.tool_calls[0].function.arguments)
         chat.messages.push({
           role: 'system',
-          content: `Desglosa la información puesta dentro de este array para responder: ${response_query}`
+          content: `Desglosa la información puesta dentro de este array para responder de forma amigable: ${response_query}`
         })
-        console.log("DATA",  `Desglosa la información puesta dentro de este array para responder: ${response_query}`)
+        console.log("DATA",  `Desglosa la información puesta dentro de este array para responder de forma amigable: ${response_query}`)
         chat.save()
         return await askOpenAI(chat)  
        

@@ -35,8 +35,14 @@ export async function receiveMessages(req, res) {
 
   // Valida si está llegando un nuevo mensaje y no los estados de los mensajes anteriores.
   if(req.body.entry[0].changes[0].value.messages){
-
     const text = req.body.entry[0].changes[0].value.messages[0].text.body 
+    console.log("WSP TEXT", text)
+    if(!text){
+      console.log("No hay texto")
+      const only_text = 'Por el momento no puedo reconocer audios, videos ni imágenes. Por favor enviáme tus requerimientos por escrito.'
+      sendResponseToWhatsapp(body, only_text)
+      return res.sendStatus(404);
+    }
     const phone_number = req.body.entry[0].changes[0].value.messages[0].from
     const date = req.body.entry[0].changes[0].value.messages[0].timestamp * 1000
     
@@ -61,7 +67,10 @@ export async function receiveMessages(req, res) {
     let response_chat = await askOpenAI(chat)
     
     try {
-      sendResponseToWhatsapp(body, response_chat)
+      if(response_chat === `Su pedido ha sido creado exitosamente. Muchas gracias.`){
+        await sendResponseToWhatsapp(body, response_chat, "+51966344009")
+      }
+      await sendResponseToWhatsapp(body, response_chat)
       res.sendStatus(200);
     } catch (error) {
       res.sendStatus(404);

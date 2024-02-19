@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export function sendResponseToWhatsapp(body, response_chat){
+export async function sendResponseToWhatsapp(body, response_chat, from_number=null){
   const token = process.env.WHATSAPP_TOKEN;
   try {
     if(body.object){
@@ -11,11 +11,10 @@ export function sendResponseToWhatsapp(body, response_chat){
         body.entry[0].changes[0].value.messages &&
         body.entry[0].changes[0].value.messages[0]
       ) {
-        let phone_number_id =
-          body.entry[0].changes[0].value.metadata.phone_number_id;
+        let phone_number_id = body.entry[0].changes[0].value.metadata.phone_number_id;
         let from = body.entry[0].changes[0].value.messages[0].from; // extract the phone number from the webhook payload
         let msg_body = body.entry[0].changes[0].value.messages[0].text.body; // extract the message text from the webhook payload
-        axios({
+        await axios({
           method: "POST", // Required, HTTP method, a string, e.g. POST, GET
           url:
             "https://graph.facebook.com/v12.0/" +
@@ -24,7 +23,7 @@ export function sendResponseToWhatsapp(body, response_chat){
             token,
           data: {
             messaging_product: "whatsapp",
-            to: from,
+            to: from_number || from,
             text: { body: response_chat },
           },
           headers: { "Content-Type": "application/json" },
