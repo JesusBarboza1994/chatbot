@@ -65,7 +65,7 @@ export async function askOpenAI(chat={messages:[]}, data_api=null){
   console.log("MESSAGESSSSSSS",messages)
   
   const data = {
-    model: 'gpt-4-1106-preview',
+    model: 'gpt-3.5-turbo',
     messages: [
       {
         role: 'system',
