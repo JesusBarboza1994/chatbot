@@ -28,7 +28,7 @@ export async function sendResponseToWhatsapp(body, response_chat, from_number=nu
           },
           headers: { "Content-Type": "application/json" },
         });
-        if(!from_number) console.log("RESPONSE WSP SEND", response.data)
+        if(from_number) console.log("RESPONSE WSP SEND", response.data)
     //   }
     // }
   } catch (error) {
