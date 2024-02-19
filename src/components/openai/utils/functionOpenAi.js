@@ -88,13 +88,23 @@ export async function askOpenAI(chat={messages:[]}, data_api=null){
   const response = await axios.post('https://api.openai.com/v1/chat/completions', data, { headers })
   if(response.data.choices[0].message.tool_calls){
     console.log('Respuesta de FUNCION:', response.data.choices[0].message.tool_calls);
-    const response_query = await queryDataBase(response.data.choices[0].message.tool_calls[0].function.arguments)
-    chat.messages.push({
-      role: 'system',
-      content: `Usa esta información para responder al cliente: ${response_query}`
-    })
+    try {
+      const response_query = await queryDataBase(response.data.choices[0].message.tool_calls[0].function.arguments)
+      chat.messages.push({
+        role: 'system',
+        content: `Usa esta información para responder al cliente: ${response_query}`
+      })
+      return await askOpenAI(chat)
+      
+    } catch (error) {
+      chat.messages.push({
+        role: 'system',
+        content: `Confirma que no se encontraron resortes solicitados.`
+      })
+    }
     chat.save()
-    return await askOpenAI(chat)
+    
+    
   }else{
     console.log('Respuesta de OpenAI:', response.data.choices[0].message);
     const response_chat = response.data.choices[0].message.content
