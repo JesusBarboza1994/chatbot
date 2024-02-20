@@ -16,6 +16,12 @@ export async function sendResponseToWhatsapp(body, response_chat, from_number=nu
         let from = body.entry[0].changes[0].value.messages[0].from; // extract the phone number from the webhook payload
         console.log("🚀 ~ sendResponseToWhatsapp ~ from:", from)
         // let msg_body = body.entry[0].changes[0].value.messages[0].text.body; // extract the message text from the webhook payload
+        const data = {
+          messaging_product: "whatsapp",
+          to: from_number || from,
+          text: { body: response_chat },
+        }
+        console.log("🚀 ~ sendResponseToWhatsapp ~ data:", data)
         const response = await axios({
           method: "POST", // Required, HTTP method, a string, e.g. POST, GET
           url:
@@ -23,11 +29,7 @@ export async function sendResponseToWhatsapp(body, response_chat, from_number=nu
             phone_number_id +
             "/messages?access_token=" +
             token,
-          data: {
-            messaging_product: "whatsapp",
-            to: from_number || from,
-            text: { body: response_chat },
-          },
+          data,
           headers: { "Content-Type": "application/json" },
         });
         if(from_number) console.log("RESPONSE WSP SEND", response.data)
