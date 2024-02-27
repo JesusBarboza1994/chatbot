@@ -6,7 +6,7 @@ import { response } from 'express';
 import { askOpenAI } from '../openai/utils/functionOpenAi.js';
 
 export function testWebhook(req, res) {
-   const verify_token = process.env.VERIFY_TOKEN;
+  const verify_token = process.env.VERIFY_TOKEN;
 
   // Parse params from the webhook verification request
   let mode = req.query["hub.mode"];
@@ -29,9 +29,6 @@ export function testWebhook(req, res) {
 
 export async function receiveMessages(req, res) {
   let body = req.body;
-
-  // Check the Incoming webhook message
-  // console.log("AQUI",JSON.stringify(req.body, null, 2));
 
   // Valida si está llegando un nuevo mensaje y no los estados de los mensajes anteriores.
   if(req.body.entry[0].changes[0].value.messages){
