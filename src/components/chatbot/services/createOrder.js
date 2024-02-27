@@ -1,3 +1,5 @@
+import { Order } from "../../../models/order.js"
+
 export async function createOrder({values, chat}){
   await Order.create({
     osis_code: values.osis_code,

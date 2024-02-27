@@ -17,11 +17,12 @@ export async function receiveMessagesFromWhatsapp({body}) {
   const chat = await ChatDao.createOrUpdateChat({phone_number, text, date})
 
   let response_chat = await chatWithGPT({chat})   
+  console.log("🚀 ~ receiveMessagesFromWhatsapp ~ response_chat:", response_chat)
   if(response_chat === 'Su pedido ha sido creado exitosamente. Muchas gracias.'){
     console.log("Enviando mensaje de pedido a vendedor...")
     await sendResponseToWhatsapp(body, response_chat, "51966344009")
   }
   await sendResponseToWhatsapp(body, response_chat)
+  return response_chat
  
-    
 }

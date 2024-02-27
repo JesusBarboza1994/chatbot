@@ -1,3 +1,4 @@
+import { chatWithGPT } from "./chatWithGPT.js"
 import { queryDataBase } from "./queryDatabase.js"
 
 export async function askApi({function_data, chat}) {
@@ -9,7 +10,8 @@ export async function askApi({function_data, chat}) {
     })
     console.log("DATA",  `Desglosa la información puesta dentro de este array para responder de forma amigable: ${response_query}`)
     chat.save()
-    return await askOpenAI(chat)  
+    console.log("🚀 ~ askApi ~ ACAAAAAAAAAAaq:", chat)
+    return await chatWithGPT({chat})  
    
   } catch (error) {
     console.log("ERROR", error)
