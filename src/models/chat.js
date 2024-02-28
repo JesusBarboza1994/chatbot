@@ -7,11 +7,12 @@ const message_schema = new mongoose.Schema({
     enum: ["user", "system", "assistant"],
     default: 'user'
   },
-  content: { type: String, required: true }
+  content: { type: String, required: true },
 })
 
 const chat_schema = new mongoose.Schema({
   phone_number: { type: String, required: true, unique: true },
+  store: { type: String, required: true },
   name: { type: String },
   messages: [ message_schema ]
 })

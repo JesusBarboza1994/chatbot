@@ -1,4 +1,4 @@
-import { Order } from "../../../models/order.js"
+import { Order } from "../models/order.js"
 
 export async function createOrder({values, chat}){
   await Order.create({

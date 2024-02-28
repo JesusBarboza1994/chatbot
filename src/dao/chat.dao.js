@@ -1,9 +1,10 @@
-import { Chat } from "../../../models/chat.js"
-async function createOrUpdateChat({phone_number, text, date}){
- let chat = await Chat.findOne({ phone_number })
+import { Chat } from "../models/chat.js"
+async function createOrUpdateChat({phone_number, text, date, store}){
+ let chat = await Chat.findOne({ phone_number, store })
  if(!chat){
    chat = await Chat.create({
      phone_number,
+     store,
      messages: [{
        created_at: new Date(date),
        role: 'user',
