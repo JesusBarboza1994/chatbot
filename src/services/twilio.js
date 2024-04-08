@@ -25,7 +25,7 @@ export async function twilioService({body, store}){
   if(response_chat === 'Su pedido ha sido creado exitosamente. Muchas gracias.'){
     console.log("Enviando mensaje de pedido a vendedor...")
     console.log("BODY", body)
-    const order = await Order.find({phone_number: body.WaId}).sort({created_at: -1}).limit(1)
+    const order = await Order.findOne({phone_number: body.WaId}).sort({created_at: -1}).limit(1)
     console.log("🚀 ~ twilioService ~ order:", order)
     const user = await User.findOne({store})
     const new_response = `Hola, te informamos que el cliente ${order.phone_number} quiero adquirir ${order.quantity} del código ${order.osis_code}. Contáctate con él para gestionar la compra.`
