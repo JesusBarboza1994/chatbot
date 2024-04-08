@@ -1,5 +1,6 @@
 import { sendResponseToWhatsapp } from "../components/whatsapp/utils/sendResponseToWhatsapp.js"
 import { ChatDao } from "../dao/index.js"
+import { Order } from "../models/order.js";
 import { chatWithGPT } from "./chatWithGPT.js"
 import twilio from 'twilio';
 
@@ -22,7 +23,9 @@ export async function twilioService({body, store}){
   console.log("🚀 ~ receiveMessagesFromWhatsapp ~ response_chat:", response_chat)
   if(response_chat === 'Su pedido ha sido creado exitosamente. Muchas gracias.'){
     console.log("Enviando mensaje de pedido a vendedor...")
-    await twilioResponse(body, response_chat, "whatsapp:+51966344009")
+    const order = await Order.find({phone_number: body.WaId}).sort({created_at: -1}).limit(1)
+    const new_response = `Hola, te informamos que el cliente ${order.phone_number} quiero adquirir ${order.quantity} del código ${order.osis_code}. Contáctate con él para gestionar la compra.`
+    await twilioResponse(body, new_response, "whatsapp:+51966344009")
   }
   await twilioResponse(body, response_chat)
   return response_chat
