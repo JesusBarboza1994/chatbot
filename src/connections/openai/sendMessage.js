@@ -8,15 +8,23 @@ export async function sendMessageOpenAi({messages, model= "gpt-3.5-turbo", chat_
       first_prompt,
       ...messages
     ],
-    tools: chat_functions
+    
   };
+  if(chat_functions.length > 0){
+    data.tools = chat_functions
+  }
 
   const headers = {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${OPENAI_API_KEY}`
   };
-
-  const response = await axios.post('https://api.openai.com/v1/chat/completions', data, { headers })
-  
-  return response
+  try {
+    const response = await axios.post('https://api.openai.com/v1/chat/completions', data, { headers })
+    console.log("🚀 ~ sendMessageOpenAi ~ response:", response)
+    return response
+    
+  } catch (error) {
+    console.log("ERROR GPT", error.response)
+  }
+ 
 }

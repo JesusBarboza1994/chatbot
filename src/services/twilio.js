@@ -34,14 +34,16 @@ async function twilioResponse(body, response_chat){
     const authToken = process.env.TWILIO_TOKEN
     const client = twilio(accountSid, authToken);
 
-    client.messages
-    .create({
+    try {
+      await client.messages.create({
         body: response_chat,
-        from: body.to,
-        to: body.from
-    })
-    .then(message => console.log(message.sid))
-    .done();
+        from: body.To,
+        to: body.From
+      })
+    } catch (error) {
+      console.log("RESPONSE WHATSAPP TWILIO", error)   
+    }
+   
   } catch (error) {
     console.log("ERROR",error)
     throw error

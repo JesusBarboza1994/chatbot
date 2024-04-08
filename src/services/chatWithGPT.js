@@ -20,6 +20,7 @@ export async function chatWithGPT({ chat, store }) {
     first_prompt,
     chat_functions,
   });
+
   if (response.data.choices[0].message.tool_calls) {
     const function_data =
       response.data.choices[0].message.tool_calls[0].function;
