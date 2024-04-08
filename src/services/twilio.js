@@ -22,7 +22,7 @@ export async function twilioService({body, store}){
   console.log("🚀 ~ receiveMessagesFromWhatsapp ~ response_chat:", response_chat)
   if(response_chat === 'Su pedido ha sido creado exitosamente. Muchas gracias.'){
     console.log("Enviando mensaje de pedido a vendedor...")
-    await twilioResponse(body, response_chat, "51966344009")
+    await twilioResponse(body, response_chat, "whatsapp:+51966344009")
   }
   await twilioResponse(body, response_chat)
   return response_chat
