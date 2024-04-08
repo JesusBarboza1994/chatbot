@@ -28,7 +28,7 @@ export async function twilioService({body, store}){
   return response_chat
 }
 
-async function twilioResponse(body, response_chat){
+async function twilioResponse(body, response_chat, phone_number){
   try {
     const accountSid = process.env.TWILIO_ACCOUNT_ID;
     const authToken = process.env.TWILIO_TOKEN
@@ -38,7 +38,7 @@ async function twilioResponse(body, response_chat){
       await client.messages.create({
         body: response_chat,
         from: body.To,
-        to: body.From
+        to: phone_number || body.From
       })
     } catch (error) {
       console.log("RESPONSE WHATSAPP TWILIO", error)   
