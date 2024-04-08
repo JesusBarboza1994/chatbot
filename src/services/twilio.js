@@ -35,11 +35,12 @@ async function twilioResponse(body, response_chat, phone_number){
     const client = twilio(accountSid, authToken);
 
     try {
-      await client.messages.create({
+      const response = await client.messages.create({
         body: response_chat,
         from: body.To,
         to: phone_number || body.From
       })
+      console.log("RES", response)
     } catch (error) {
       console.log("RESPONSE WHATSAPP TWILIO", error)   
     }
