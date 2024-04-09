@@ -20,9 +20,7 @@ export async function sendMessageOpenAi({messages, model= "gpt-3.5-turbo", chat_
   };
   try {
     const response = await axios.post('https://api.openai.com/v1/chat/completions', data, { headers })
-    console.log("🚀 ~ sendMessageOpenAi ~ response:", response)
     return response
-    
   } catch (error) {
     console.log("ERROR GPT", error.response)
   }

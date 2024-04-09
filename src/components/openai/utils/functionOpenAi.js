@@ -108,7 +108,6 @@ export async function askOpenAI(chat={messages:[]}){
           role: 'system',
           content: `Desglosa la información puesta dentro de este array para responder de forma amigable: ${response_query}`
         })
-        console.log("DATA",  `Desglosa la información puesta dentro de este array para responder de forma amigable: ${response_query}`)
         chat.save()
         return await askOpenAI(chat)  
        
@@ -125,9 +124,7 @@ export async function askOpenAI(chat={messages:[]}){
     }
     
   }else{
-    console.log('Respuesta de OpenAI:', response.data.choices[0].message);
     response_chat = response.data.choices[0].message.content
-    console.log("RES", response_chat)
     chat.messages.push({
       role: 'assistant',
       content: response_chat

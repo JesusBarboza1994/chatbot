@@ -33,9 +33,7 @@ export async function chatWithGPT({ chat, store }) {
     if (function_data.name === "ask_api")
       return await askApi({ function_data, chat, store });
   } else {
-    console.log("Respuesta de OpenAI:", response.data.choices[0].message);
     const response_chat = response.data.choices[0].message.content;
-    console.log("RES", response_chat);
     chat.messages.push({
       role: "assistant",
       content: response_chat,
