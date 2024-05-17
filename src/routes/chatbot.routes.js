@@ -5,7 +5,7 @@ import { waitForMessage } from "../middlewares/createCompleteMessage.js";
 
 const router = express.Router();
 router.get("/webhook/:store", testWebhookWhatsappGetController);
-router.post("/webhook/:store", receiveMessagesFromWhatsappPostController);
+router.post("/webhook/:store", waitForMessage, receiveMessagesFromWhatsappPostController);
 
 router.post('/message', waitForMessage, messageController);
 
