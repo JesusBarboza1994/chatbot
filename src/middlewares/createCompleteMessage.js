@@ -24,5 +24,7 @@ export const waitForMessage = (req, res, next) => {
       req.messageStore = messageStore
       next()
   }, 8000); // Temporizador de 10 segundos
+  console.log(`Mensaje recibido: ${message}`)
+  console.log(messageStore)
   res.send(`Mensaje recibido: ${message}`);
 }
