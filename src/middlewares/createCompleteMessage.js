@@ -2,7 +2,7 @@ let messageStore = {}
 
 export const waitForMessage = (req, res, next) => {
   const userId = req.body.WaId;
-  const message = req.body.message;
+  const message = req.body.Body;
 
   
   if (!messageStore[userId]) {
