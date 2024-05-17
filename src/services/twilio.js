@@ -5,7 +5,7 @@ import { User } from "../models/user.js";
 import { chatWithGPT } from "./chatWithGPT.js"
 import twilio from 'twilio';
 
-export async function twilioService({body, store}){
+export async function twilioService({body, message, store}){
   if(body.MessageType !== "text"){
     console.log("No hay texto")
     const only_text = 'Por el momento no puedo reconocer audios, videos ni imágenes. Por favor enviáme tus requerimientos por escrito.'
@@ -15,7 +15,7 @@ export async function twilioService({body, store}){
 
   const chat = await ChatDao.createOrUpdateChat({
     phone_number: body.WaId,
-    text: body.Body,
+    text: message,
     date: new Date,
     store 
   })
