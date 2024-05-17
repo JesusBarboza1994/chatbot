@@ -6,6 +6,7 @@ export async function receiveMessagesFromWhatsappPostController(req, res) {
   const { store } = req.params
   const userId = body.WaId;
   const messageStore = req.messageStore
+  console.log("🚀 ~ receiveMessagesFromWhatsappPostController ~ messageStore:", messageStore)
   const message= messageStore[userId].messages.join(' ')
   console.log("🚀 ~ receiveMessagesFromWhatsappPostController ~ body:", body);
 
