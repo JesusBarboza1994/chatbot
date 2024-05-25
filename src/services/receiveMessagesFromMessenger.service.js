@@ -45,7 +45,7 @@ export async function receiveMessagesFromMessenger({data}){
         role: "system",
         content: "Your only mission is to get the phone number of the customer."}
     })
-    console.log("RESPONSE", response)
+    console.log("RESPONSE", response.data.choices[0].message)
   }
 
   
