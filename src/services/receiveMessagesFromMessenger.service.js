@@ -1,5 +1,6 @@
 import { sendMessageOpenAi } from "../connections/openai/sendMessage.js";
 import { Chat } from "../models/chat.js";
+import { twilioResponse } from "./twilio.js";
 
 export async function receiveMessagesFromMessenger({data}){
   let previousChat = await Chat.findOne({customer_messenger_id: data.psid})
@@ -48,7 +49,9 @@ export async function receiveMessagesFromMessenger({data}){
       if(response.data.choices[0].message.tool_calls){
         console.log("RESPONSE2", response.data.choices[0].message.tool_calls)
         if(response.data.choices[0].message.tool_calls[0].function.name = 'getPhoneNumber'){
-          // TODO: Enviar un mensaje de whatsapp al numero.
+          previousChat.phone_number= `51${JSON.parse(response.data.choices[0].message.tool_calls[0].function.arguments).phone}`
+          const whatsappMessage = `Hola ${previousChat.name}. Soy tu asistente virtual, ¿dime para qué carro estás buscando resortes? (marca, modelo, año, posición y versión).`
+          await twilioResponse({To: `'whatsapp:+51910647057'`, From: `whatsapp:+${previousChat.phone_number}`}, whatsappMessage )
           return 'Muchas gracias. En breve te contactaremos al whatsapp '+ JSON.parse(response.data.choices[0].message.tool_calls[0].function.arguments).phone + '.'
         }
       }else{

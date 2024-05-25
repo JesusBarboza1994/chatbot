@@ -32,7 +32,7 @@ export async function twilioService({body, message, store}){
   return response_chat
 }
 
-async function twilioResponse(body, response_chat, phone_number){
+export async function twilioResponse(body, response_chat, phone_number){
   try {
     console.log("BODY TWILIO", body)
     const accountSid = process.env.TWILIO_ACCOUNT_ID;
