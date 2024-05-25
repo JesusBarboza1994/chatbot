@@ -54,9 +54,9 @@ export async function receiveMessagesFromMessenger({data}){
           // TODO: Enviar un mensaje de whatsapp al numero.
           return 'Muchas gracias. En breve te contactaremos al whatsapp '+ response.data.choices[0].message.tool_calls[0].function.arguments.phone + '.'
         }
+      }else{
+        return response.data.choices[0].message.content
       }
-    }else{
-      return response.data.choices[0].message.content
     }
   }
 }
