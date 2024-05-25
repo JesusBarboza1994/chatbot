@@ -37,14 +37,11 @@ export async function receiveMessagesFromMessenger({data}){
         }
       }
     const response = await sendMessageOpenAi({
-      messages: [{
-        role: 'user',
-        content: previousChat.fb_messages[previousChat.fb_messages.length - 1]
-      }],
+      messages: previousChat.fb_messages.map((mess)=>{return {role: 'user', content: mess}}),
       chat_functions: [getPhoneNumber],
       first_prompt: {
         role: "system",
-        content: "You are a virtual seller of helicoidal suspension automotice springs and need the phone number of your customer to transfer the comunication to whatsapp."}
+        content: "You are a virtual seller of helicoidal suspension automotice springs and need the phone number of your customer to transfer the comunication to whatsapp. That's why, you will ask many kind of questions until he send you his phone number. You must be persuasive and friendly until you get it.",}
     })
     if(response.data.choices[0].message){
       console.log("RESPONSE", response.data.choices[0].message)
