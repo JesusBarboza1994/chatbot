@@ -51,7 +51,8 @@ export async function receiveMessagesFromMessenger({data}){
         if(response.data.choices[0].message.tool_calls[0].function.name = 'getPhoneNumber'){
           previousChat.phone_number= `51${JSON.parse(response.data.choices[0].message.tool_calls[0].function.arguments).phone}`
           const whatsappMessage = `Hola ${previousChat.name}. Soy tu asistente virtual, ¿dime para qué carro estás buscando resortes? (marca, modelo, año, posición y versión).`
-          await twilioResponse({To: `'whatsapp:+51910647057'`, From: `whatsapp:+${previousChat.phone_number}`}, whatsappMessage )
+          previousChat.save()
+          twilioResponse({To: `'whatsapp:+51910647057'`, From: `whatsapp:+${previousChat.phone_number}`}, whatsappMessage )
           return 'Muchas gracias. En breve te contactaremos al whatsapp '+ JSON.parse(response.data.choices[0].message.tool_calls[0].function.arguments).phone + '.'
         }
       }else{
