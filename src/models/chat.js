@@ -15,7 +15,6 @@ const chat_schema = new mongoose.Schema({
   store: { type: String, required: true },
   name: { type: String },
   messages: [ message_schema ],
-  phone: { type: String },
   fb_messages: [{type: String}],
   customer_messenger_id: { type: String },
 },{

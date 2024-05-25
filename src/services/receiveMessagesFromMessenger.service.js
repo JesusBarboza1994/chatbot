@@ -44,21 +44,9 @@ export async function receiveMessagesFromMessenger({data}){
         role: "system",
         content: "You are a virtual seller of helicoidal suspension automotice springs and need the phone number of your customer to transfer the comunication to whatsapp. That's why, you will ask many kind of questions until he send you his phone number. You must be persuasive and friendly until you get it.",}
     })
-    if(response.data.choices[0].message){
-      console.log("RESPONSE", response.data.choices[0].message)
-      if(response.data.choices[0].message.tool_calls){
-        console.log("RESPONSE2", response.data.choices[0].message.tool_calls)
-        if(response.data.choices[0].message.tool_calls[0].function.name = 'getPhoneNumber'){
-          previousChat.phone_number= `51${JSON.parse(response.data.choices[0].message.tool_calls[0].function.arguments).phone}`
-          const whatsappMessage = `Hola ${previousChat.name}. Soy tu asistente virtual, ¿dime para qué carro estás buscando resortes? (marca, modelo, año, posición y versión).`
-          previousChat.save()
-          twilioResponse({To: `'whatsapp:+51910647057'`, From: `whatsapp:+${previousChat.phone_number}`}, whatsappMessage )
-          return 'Muchas gracias. En breve te contactaremos al whatsapp '+ JSON.parse(response.data.choices[0].message.tool_calls[0].function.arguments).phone + '.'
-        }
-      }else{
-        return response.data.choices[0].message.content
-      }
-    }
+
+    return await receiveMessagesFromMessenger({chat: previousChat, response})
+    
   }
 }
 
