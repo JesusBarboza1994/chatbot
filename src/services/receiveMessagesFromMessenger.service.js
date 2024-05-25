@@ -30,7 +30,7 @@ export async function receiveMessagesFromMessenger({data}){
             "properties": {
               "phone": {
                 "type": "string",
-                "description": "the phone number to extract of the message. It must convert to a peruvian cellphone (e.g: 51977354389) "
+                "description": "the cellphone number to extract of the message."
               },
             },
             "required": ["phone"]
@@ -45,7 +45,7 @@ export async function receiveMessagesFromMessenger({data}){
       chat_functions: [getPhoneNumber],
       first_prompt: {
         role: "system",
-        content: "Your only mission is to get the phone number of the customer."}
+        content: "You are a virtual seller and need the phone number of your customer to transfer the comunication to whatsapp."}
     })
     if(response.data.choices[0].message){
       console.log("RESPONSE", response.data.choices[0].message)
