@@ -24,7 +24,7 @@ export async function receiveMessagesFromMessenger({data}){
         "type": "function",
         "function": {
           "name": 'getPhoneNumber',
-          "description": 'extract the phone number from message',
+          "description": 'extract the phone number from message. It must convert to a peruvian cellphone (e.g: 51977354389)',
           "parameters": {
             "type": "object",
             "properties": {
@@ -47,7 +47,15 @@ export async function receiveMessagesFromMessenger({data}){
         role: "system",
         content: "Your only mission is to get the phone number of the customer."}
     })
-    console.log("RESPONSE", response.data.choices[0].message.tool_calls[0]?.function)
+    if(response.data.choices[0].message){
+      console.log("RESPONSE", response.data.choices[0].message)
+      if(response.data.choices[0].message.tool_calls){
+        console.log("RESPONSE", response.data.choices[0].message.tool_calls)
+        if(response.data.choices[0].message.tool_calls[0].function){
+          console.log("RESPONSE", response.data.choices[0].message.tool_calls[0].function)
+        }
+      }
+    }
   }
 
   
