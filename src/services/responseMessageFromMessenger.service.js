@@ -3,7 +3,7 @@ import { Chat } from "../models/chat.js"
 export async function responseMessageFromMessenger({response, chat}){
   if(!response.data.choices[0].message) return 'Disculpa, por el momento no puedo atenderte. Inténtalo más tarde.'
   console.log("RESPONSE", response.data.choices[0].message)  
-  if(!(response.data.choices[0].message?.tool_calls[0].function.name = 'getPhoneNumber')) return response.data.choices[0].message.content  
+  if(!(response.data.choices[0].message?.tool_calls[0].function.name === 'getPhoneNumber')) return response.data.choices[0].message.content  
   const phone_number = `51${JSON.parse(response.data.choices[0].message.tool_calls[0].function.arguments).phone}`
   const prevChat = await Chat.findOne({phone_number, store: chat.store})
   console.log("🚀 ~ responseMessageFromMessenger ~ prevChat:", prevChat)
