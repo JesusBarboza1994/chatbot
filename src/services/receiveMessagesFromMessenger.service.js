@@ -8,6 +8,7 @@ export async function receiveMessagesFromMessenger({data}){
     previousChat.fb_messages.push(
       data.message
     )
+    await previousChat.save()
   }
   else{
     previousChat = await Chat.create({
