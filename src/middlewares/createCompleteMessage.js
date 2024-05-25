@@ -23,7 +23,7 @@ export const waitForMessage = (req, res, next) => {
   messageStore[userId].timer = setTimeout(() => {
       req.messageStore = messageStore
       next()
-  }, 8000); // Temporizador de 10 segundos
+  }, 4500); // Temporizador de 10 segundos
   console.log(`Mensaje recibido: ${message}`)
   console.log(messageStore)
   res.send(`Mensaje recibido: ${message}`);
