@@ -50,9 +50,9 @@ export async function receiveMessagesFromMessenger({data}){
     if(response.data.choices[0].message){
       console.log("RESPONSE", response.data.choices[0].message)
       if(response.data.choices[0].message.tool_calls){
-        console.log("RESPONSE", response.data.choices[0].message.tool_calls)
+        console.log("RESPONSE2", response.data.choices[0].message.tool_calls)
         if(response.data.choices[0].message.tool_calls[0].function){
-          console.log("RESPONSE", response.data.choices[0].message.tool_calls[0].function)
+          console.log("RESPONSE3", response.data.choices[0].message.tool_calls[0].function)
         }
       }
     }
