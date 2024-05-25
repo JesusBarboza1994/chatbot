@@ -1,6 +1,6 @@
 import { sendMessageOpenAi } from "../connections/openai/sendMessage.js";
 import { Chat } from "../models/chat.js";
-import { twilioResponse } from "./twilio.js";
+import { responseMessageFromMessenger } from "./responseMessageFromMessenger.service.js";
 
 export async function receiveMessagesFromMessenger({data}){
   let previousChat = await Chat.findOne({customer_messenger_id: data.psid})
@@ -45,7 +45,7 @@ export async function receiveMessagesFromMessenger({data}){
         content: "You are a virtual seller of helicoidal suspension automotice springs and need the phone number of your customer to transfer the comunication to whatsapp. That's why, you will ask many kind of questions until he send you his phone number. You must be persuasive and friendly until you get it.",}
     })
 
-    return await receiveMessagesFromMessenger({chat: previousChat, response})
+    return await responseMessageFromMessenger({chat: previousChat, response})
     
   }
 }
