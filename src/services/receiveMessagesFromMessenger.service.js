@@ -49,7 +49,7 @@ export async function receiveMessagesFromMessenger({data}){
         console.log("RESPONSE2", response.data.choices[0].message.tool_calls)
         if(response.data.choices[0].message.tool_calls[0].function.name = 'getPhoneNumber'){
           // TODO: Enviar un mensaje de whatsapp al numero.
-          return 'Muchas gracias. En breve te contactaremos al whatsapp '+ response.data.choices[0].message.tool_calls[0].function.arguments.phone + '.'
+          return 'Muchas gracias. En breve te contactaremos al whatsapp '+ JSON.parse(response.data.choices[0].message.tool_calls[0].function.arguments).phone + '.'
         }
       }else{
         return response.data.choices[0].message.content

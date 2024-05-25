@@ -34,6 +34,7 @@ export async function twilioService({body, message, store}){
 
 async function twilioResponse(body, response_chat, phone_number){
   try {
+    console.log("BODY TWILIO", body)
     const accountSid = process.env.TWILIO_ACCOUNT_ID;
     const authToken = process.env.TWILIO_TOKEN
     const client = twilio(accountSid, authToken);
