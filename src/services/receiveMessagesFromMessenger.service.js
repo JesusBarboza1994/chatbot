@@ -18,7 +18,7 @@ export async function receiveMessagesFromMessenger({data}){
     })
   }
 
-  if(previousChat.phone){
+  if(!previousChat.phone){
     const getPhoneNumber = {
         "type": "function",
         "function": {
