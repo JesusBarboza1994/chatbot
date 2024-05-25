@@ -9,7 +9,6 @@ export default async function receiveMessagesFromMessengerPostController(req, re
     return res.status(200).send({
       success: true,
       message: "Message received",
-      body:body,
       data: response
     })
   } catch (error) {
