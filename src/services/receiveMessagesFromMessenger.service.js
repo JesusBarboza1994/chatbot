@@ -38,10 +38,10 @@ export async function receiveMessagesFromMessenger({data}){
         }
       }
     const response = await sendMessageOpenAi({
-      messages: {
+      messages: [{
         role: 'user',
-        content: [previousChat.fb_messages[previousChat.fb_messages.length - 1]]
-      },
+        content: previousChat.fb_messages[previousChat.fb_messages.length - 1]
+      }],
       chat_functions: [getPhoneNumber],
       first_prompt: {
         role: "system",
