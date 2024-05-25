@@ -28,8 +28,8 @@ export async function receiveMessagesFromMessenger({data}){
             "type": "object",
             "properties": {
               "phone": {
-                "type": "string",
-                "description": "the cellphone number to extract of the message. It must have the structure of a valid peruvian cellphone (e.g: 51977354389)",
+                "type": "number",
+                "description": "the cellphone number to extract of the message. It must have 9 digits and starts with 9",
               },
             },
             "required": ["phone"]
