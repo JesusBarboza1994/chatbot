@@ -2,7 +2,6 @@ import { sendMessageOpenAi } from "../connections/openai/sendMessage.js";
 import { Chat } from "../models/chat.js";
 
 export async function receiveMessagesFromMessenger({data}){
-  //TODO: validar con gpt que ingresa un numero de telofono
   let previousChat = await Chat.findOne({customer_messenger_id: data.psid})
   if(previousChat){
     previousChat.fb_messages.push(
@@ -30,7 +29,7 @@ export async function receiveMessagesFromMessenger({data}){
             "properties": {
               "phone": {
                 "type": "string",
-                "description": "the cellphone number to extract of the message."
+                "description": "the cellphone number to extract of the message. It must have the structure of a valid peruvian cellphone (e.g: 51977354389)",
               },
             },
             "required": ["phone"]
@@ -45,19 +44,21 @@ export async function receiveMessagesFromMessenger({data}){
       chat_functions: [getPhoneNumber],
       first_prompt: {
         role: "system",
-        content: "You are a virtual seller and need the phone number of your customer to transfer the comunication to whatsapp."}
+        content: "You are a virtual seller of helicoidal suspension automotice springs and need the phone number of your customer to transfer the comunication to whatsapp."}
     })
     if(response.data.choices[0].message){
       console.log("RESPONSE", response.data.choices[0].message)
       if(response.data.choices[0].message.tool_calls){
         console.log("RESPONSE2", response.data.choices[0].message.tool_calls)
-        if(response.data.choices[0].message.tool_calls[0].function){
-          console.log("RESPONSE3", response.data.choices[0].message.tool_calls[0].function)
+        if(response.data.choices[0].message.tool_calls[0].function.name = 'getPhoneNumber'){
+          // TODO: Enviar un mensaje de whatsapp al numero.
+          return 'Muchas gracias. En breve te contactaremos al whatsapp '+ response.data.choices[0].message.tool_calls[0].function.arguments + '.'
         }
+      }
+      }else{
+        return response.data.choices[0].message.content
       }
     }
   }
 
-  
-}
 

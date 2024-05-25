@@ -5,10 +5,11 @@ export default async function receiveMessagesFromMessengerPostController(req, re
     const body = req.body
     const { store } = req.params
     console.log("BODY", body)
-    await receiveMessagesFromMessenger({data:{...body, store}})
+    const response = await receiveMessagesFromMessenger({data:{...body, store}})
     return res.status(200).send({
       success: true,
-      message: "Message received"
+      message: "Message received",
+      data: response
     })
   } catch (error) {
     console.log("🚀 ~ receiveMessagesFromMessengerPostController ~ error:", error)
