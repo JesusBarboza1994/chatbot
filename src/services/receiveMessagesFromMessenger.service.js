@@ -40,14 +40,14 @@ export async function receiveMessagesFromMessenger({data}){
     const response = await sendMessageOpenAi({
       messages: {
         role: 'user',
-        content: previousChat.fb_messages[previousChat.fb_messages.length - 1]
+        content: [previousChat.fb_messages[previousChat.fb_messages.length - 1]]
       },
       chat_functions: [getPhoneNumber],
       first_prompt: {
         role: "system",
         content: "Your only mission is to get the phone number of the customer."}
     })
-    console.log("RESPONSE", response.data.choices[0].message.tool_calls[0].function)
+    console.log("RESPONSE", response.data.choices[0].message.tool_calls[0]?.function)
   }
 
   
