@@ -39,7 +39,7 @@ export async function receiveMessagesFromMessenger({data}){
       }
     console.log("DATA", previousChat.fb_messages)
     const response = await sendMessageOpenAi({
-      messages: previousChat.fb_messages,
+      messages: previousChat.fb_messages.map(mess => {return {role: 'user', content: mess}}),
       chat_functions: [getPhoneNumber],
       first_prompt: ''
     })
